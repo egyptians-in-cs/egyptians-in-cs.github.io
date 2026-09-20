@@ -213,5 +213,12 @@
   "Airbnb": { "lat": 37.7879, "lng": -122.4075, "country": "USA", "city": "San Francisco" },
   "Qatar Computing Research Institute": { "lat": 25.2856, "lng": 51.5264, "country": "Qatar", "city": "Doha" },
   "Meta FAIR": { "lat": 37.452, "lng": -122.178, "country": "USA", "city": "Menlo Park" },
-  "FAIR": { "lat": 37.452, "lng": -122.178, "country": "USA", "city": "Menlo Park" }
+  "FAIR": { "lat": 37.452, "lng": -122.178, "country": "USA", "city": "Menlo Park" },
+  "KTH Royal Institute of Technology, Stockholm": { "lat": 59.3251, "lng": 18.0711, "country": "Sweden", "city": "Stockholm" },
+  "Future University In Egypt": { "lat": 30.0444, "lng": 31.2357, "country": "Egypt", "city": "Cairo" },
+  "Queens university canada": { "lat": 44.2307, "lng": -76.4813, "country": "Canada", "city": "Kingston" },
+  "ETH , Zurich": { "lat": 47.3744, "lng": 8.541, "country": "Switzerland", "city": "Zurich" },
+  "Carnegie Mellon university": { "lat": 40.4407, "lng": -80.0026, "country": "USA", "city": "Pittsburgh" },
+  "The George Washington University": { "lat": 38.8951, "lng": -77.0364, "country": "USA", "city": "Washington DC" },
+  "Indiana University Bloomington": { "lat": 39.167, "lng": -86.5343, "country": "USA", "city": "Bloomington" }
 }
