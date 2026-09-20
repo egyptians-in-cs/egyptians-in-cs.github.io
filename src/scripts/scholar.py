@@ -85,9 +85,13 @@ def metrics(author):
     }
 
 
-def hindex_for(profile_url):
-    """h-index behind a Scholar profile link. Returns None when there is no id."""
+def metrics_for(profile_url):
+    """Metrics behind a Scholar profile link. Returns None when there is no id.
+
+    The whole record is fetched either way, so callers take the citation count
+    with the h-index rather than discarding it and leaving `citedby` at 0.
+    """
     author_id = scholar_id(profile_url)
     if not author_id:
         return None
-    return metrics(fetch_author(author_id))["hindex"]
+    return metrics(fetch_author(author_id))

@@ -138,7 +138,7 @@ def cmd_fetch(args):
         # Look the h-index up now so the gate decision is visible while reviewing.
         if action == "add":
             try:
-                found = scholar.hindex_for(entry["scholar"])
+                found = scholar.metrics_for(entry["scholar"])
                 if found is None:
                     # Not disqualifying: a few prominent researchers are in the
                     # directory on a Semantic Scholar or ResearchGate link. It does
@@ -146,7 +146,8 @@ def cmd_fetch(args):
                     warnings.append("no Google Scholar link: h-index unverified and "
                                     "refresh will always skip them")
                 else:
-                    entry["hindex"] = found
+                    entry["hindex"] = found["hindex"]
+                    entry["citedby"] = found["citedby"]
                     entry["lastupdate"] = today()
                 scholar.pause()
             except scholar.Blocked as error:
