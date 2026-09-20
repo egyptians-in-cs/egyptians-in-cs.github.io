@@ -110,11 +110,24 @@ export class MapComponent implements AfterViewInit, OnChanges, OnDestroy {
       maxBoundsViscosity: 1.0
     });
 
-    // CartoDB Voyager tiles - clean, academic look
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-      subdomains: 'abcd',
-      maxZoom: 19
+    // Esri World Light Gray Canvas - clean, academic look, and usable without
+    // an API key. (CARTO's basemaps now watermark anonymous requests with
+    // "API KEY REQUIRED", which is why this is no longer CartoDB Voyager.)
+    const esriAttribution =
+      'Tiles &copy; <a href="https://www.esri.com/">Esri</a> &mdash; Esri, HERE, Garmin, ' +
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+      attribution: esriAttribution,
+      maxZoom: 19,
+      maxNativeZoom: 16   // the service stops at 16; Leaflet upscales beyond it
+    }).addTo(this.map);
+
+    // The grey basemap carries no place names, so labels come as a separate layer.
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 19,
+      maxNativeZoom: 16,
+      pane: 'overlayPane'
     }).addTo(this.map);
   }
 
