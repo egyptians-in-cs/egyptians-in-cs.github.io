@@ -163,7 +163,7 @@
   "University of Toronto": { "lat": 43.6535, "lng": -79.3839, "country": "Canada", "city": "Toronto" },
   "University of Waterloo": { "lat": 43.4653, "lng": -80.5223, "country": "Canada", "city": "Waterloo" },
   "University of Victoria": { "lat": 48.4283, "lng": -123.365, "country": "Canada", "city": "Victoria" },
-  "Universit\u00e9 du Qu\u00e9bec en Outaouais": { "lat": 45.4278, "lng": -75.711, "country": "Canada", "city": "Gatineau" },
+  "Université du Québec en Outaouais": { "lat": 45.4278, "lng": -75.711, "country": "Canada", "city": "Gatineau" },
   "Valeo": { "lat": 48.8589, "lng": 2.32, "country": "France", "city": "Paris" },
   "Virginia Tech": { "lat": 37.2297, "lng": -80.4137, "country": "USA", "city": "Blacksburg" },
   "Volkswagen Financial Service": { "lat": 52.2647, "lng": 10.5236, "country": "Germany", "city": "Braunschweig" },
@@ -204,7 +204,7 @@
   "Cambridge": { "lat": 52.1976, "lng": 0.1392, "country": "UK", "city": "Cambridge" },
   "Saarland University": { "lat": 49.2344, "lng": 6.9964, "country": "Germany", "city": "Saarbrucken" },
   "Menoufia University": { "lat": 30.4197, "lng": 31.0796, "country": "Egypt", "city": "Shebin El-Kom" },
-  "ELLIS Institute T\u00fcbingen": { "lat": 48.5203, "lng": 9.0536, "country": "Germany", "city": "Tubingen" },
+  "ELLIS Institute Tübingen": { "lat": 48.5203, "lng": 9.0536, "country": "Germany", "city": "Tubingen" },
   "ELLIS": { "lat": 48.5203, "lng": 9.0536, "country": "Germany", "city": "Tubingen" },
   "Max-Planck Institute for Intelligent Systems": { "lat": 48.5203, "lng": 9.0536, "country": "Germany", "city": "Tubingen" },
   "Ulm University": { "lat": 48.3985, "lng": 9.9912, "country": "Germany", "city": "Ulm" },
@@ -220,5 +220,13 @@
   "ETH , Zurich": { "lat": 47.3744, "lng": 8.541, "country": "Switzerland", "city": "Zurich" },
   "Carnegie Mellon university": { "lat": 40.4407, "lng": -80.0026, "country": "USA", "city": "Pittsburgh" },
   "The George Washington University": { "lat": 38.8951, "lng": -77.0364, "country": "USA", "city": "Washington DC" },
-  "Indiana University Bloomington": { "lat": 39.167, "lng": -86.5343, "country": "USA", "city": "Bloomington" }
+  "Indiana University Bloomington": { "lat": 39.167, "lng": -86.5343, "country": "USA", "city": "Bloomington" },
+  "Università della Svizzera italiana (USI)": { "lat": 46.0038, "lng": 8.9512, "country": "Switzerland", "city": "Lugano" },
+  "Vector Institute": { "lat": 43.6535, "lng": -79.3839, "country": "Canada", "city": "Toronto" },
+  "University of Alberta": { "lat": 53.5462, "lng": -113.4912, "country": "Canada", "city": "Edmonton" },
+  "Universiti Teknologi Malaysia": { "lat": 1.4582, "lng": 103.7649, "country": "Malaysia", "city": "Johor Bahru" },
+  "Multimedia University, Malaysia": { "lat": 2.9339, "lng": 101.6456, "country": "Malaysia", "city": "Cyberjaya" },
+  "University of Louisiana": { "lat": 30.2262, "lng": -92.0178, "country": "USA", "city": "Lafayette" },
+  "Indiana University Indianapolis": { "lat": 39.7683, "lng": -86.1584, "country": "USA", "city": "Indianapolis" },
+  "University of Sharjah": { "lat": 25.3461, "lng": 55.4211, "country": "UAE", "city": "Sharjah" }
 }
