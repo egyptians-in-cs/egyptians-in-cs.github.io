@@ -65,6 +65,17 @@ a month old. `status` reports how many are stale. Being blocked is not a failure
 push through — everything already fetched is saved, and the run picks up where it
 left off next time.
 
+Two safeguards keep a run from going sideways:
+
+* **A refusal counter.** Three consecutive refusals end the run.
+* **A 90-second ceiling on any single lookup** (`MAX_LOOKUP_SECONDS`). `scholarly`
+  sleeps 60–120s internally when it suspects throttling, and one lookup was once
+  observed sitting there for 17 minutes — invisible to the refusal counter, because
+  a stall is not a refusal. The ceiling is enforced with `SIGALRM` so it interrupts
+  those sleeps, and the exception derives from `BaseException` so scholarly's own
+  broad `except Exception` cannot swallow it. A stalled lookup is reported as a
+  block, so repeated stalls stop the run like repeated refusals do.
+
 Alongside h-index and citations, a refresh fills in an affiliation, website or
 interests **only when the directory has none** — a submitted value always wins.
 

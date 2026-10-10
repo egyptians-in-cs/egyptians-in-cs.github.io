@@ -14,7 +14,10 @@ later, not to push harder.
 
 import re
 import time
+import signal
 import random
+import threading
+from contextlib import contextmanager
 
 SCHOLAR_ID = re.compile(r"user=([\w-]+)")
 
@@ -25,6 +28,15 @@ MAX_DELAY = 8.0
 
 class Blocked(Exception):
     """Scholar refused the request (rate limited or captcha-walled)."""
+
+
+class Timeout(BaseException):
+    """A lookup outran its wall-clock budget.
+
+    Deliberately derived from BaseException rather than Exception: scholarly
+    catches Exception broadly in its own retry loops, and would swallow this
+    before it ever reached us.
+    """
 
 
 def scholar_id(profile_url):
@@ -47,6 +59,13 @@ SECTIONS = ["basics", "indices"]
 RETRIES = 2
 TIMEOUT = 20
 
+# set_timeout above bounds a single HTTP request, but not scholarly's own
+# behaviour around it: when it suspects throttling it sleeps 60-120s internally
+# between retries, and a lookup has been observed to sit there for 17 minutes.
+# That hides the stall from the caller's circuit breaker, which only counts
+# refusals. This is the hard ceiling on one lookup, start to finish.
+MAX_LOOKUP_SECONDS = 90
+
 _configured = False
 
 
@@ -58,13 +77,47 @@ def _configure(scholarly):
         _configured = True
 
 
+@contextmanager
+def time_limit(seconds):
+    """Abort the enclosed block if it runs longer than `seconds`.
+
+    Uses SIGALRM, which interrupts the call wherever it is — including inside
+    scholarly's internal sleeps. Only the main thread can carry an alarm, so
+    off the main thread (or on a platform without SIGALRM) this does nothing
+    rather than failing.
+    """
+    usable = hasattr(signal, "SIGALRM") and threading.current_thread() is threading.main_thread()
+    if not usable:
+        yield
+        return
+
+    def ring(signum, frame):
+        raise Timeout(f"no answer within {seconds}s")
+
+    previous = signal.signal(signal.SIGALRM, ring)
+    signal.setitimer(signal.ITIMER_REAL, seconds)
+    try:
+        yield
+    finally:
+        signal.setitimer(signal.ITIMER_REAL, 0)
+        signal.signal(signal.SIGALRM, previous)
+
+
 def fetch_author(author_id):
-    """Read one Scholar profile. Raises Blocked when Scholar turns us away."""
+    """Read one Scholar profile. Raises Blocked when Scholar turns us away.
+
+    A lookup that stalls past MAX_LOOKUP_SECONDS is reported as Blocked too:
+    in practice a stall means the same thing as a refusal, and it should count
+    towards the caller's circuit breaker the same way.
+    """
     from scholarly import scholarly
 
     _configure(scholarly)
     try:
-        return scholarly.fill(scholarly.search_author_id(author_id), sections=SECTIONS)
+        with time_limit(MAX_LOOKUP_SECONDS):
+            return scholarly.fill(scholarly.search_author_id(author_id), sections=SECTIONS)
+    except Timeout as error:
+        raise Blocked(f"stalled, gave up after {MAX_LOOKUP_SECONDS}s ({error})") from error
     except Exception as error:
         message = str(error).lower()
         if "cannot fetch" in message or "429" in message or "captcha" in message \
