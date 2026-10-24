@@ -228,5 +228,6 @@
   "Multimedia University, Malaysia": { "lat": 2.9339, "lng": 101.6456, "country": "Malaysia", "city": "Cyberjaya" },
   "University of Louisiana": { "lat": 30.2262, "lng": -92.0178, "country": "USA", "city": "Lafayette" },
   "Indiana University Indianapolis": { "lat": 39.7683, "lng": -86.1584, "country": "USA", "city": "Indianapolis" },
-  "University of Sharjah": { "lat": 25.3461, "lng": 55.4211, "country": "UAE", "city": "Sharjah" }
+  "University of Sharjah": { "lat": 25.3461, "lng": 55.4211, "country": "UAE", "city": "Sharjah" },
+  "Arab Open University, Oman": { "lat": 23.6124, "lng": 58.5938, "country": "Oman", "city": "Muscat" }
 }
