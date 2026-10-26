@@ -75,6 +75,13 @@ Two safeguards keep a run from going sideways:
   those sleeps, and the exception derives from `BaseException` so scholarly's own
   broad `except Exception` cannot swallow it. A stalled lookup is reported as a
   block, so repeated stalls stop the run like repeated refusals do.
+* **Browser cleanup on exit.** When Scholar shows a CAPTCHA, `scholarly` opens a
+  geckodriver and a headless Firefox, and only tries to close them while Python is
+  shutting down — too late to work. `scholar.close_browser()` quits them at exit
+  instead, and stops anything else the run started that is still alive. It only
+  ever touches processes the run itself started, never a Firefox you have open.
+  `pipeline.py` turns SIGTERM into a normal exit so this also happens when a run
+  is stopped with `pkill` or by a scheduler.
 
 Alongside h-index and citations, a refresh fills in an affiliation, website or
 interests **only when the directory has none** — a submitted value always wins.

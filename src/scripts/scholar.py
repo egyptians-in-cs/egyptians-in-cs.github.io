@@ -12,11 +12,15 @@ Nothing here retries aggressively; being blocked is a reason to come back
 later, not to push harder.
 """
 
+import os
 import re
+import sys
 import time
+import atexit
 import signal
 import random
 import threading
+import subprocess
 from contextlib import contextmanager
 
 SCHOLAR_ID = re.compile(r"user=([\w-]+)")
@@ -74,7 +78,65 @@ def _configure(scholarly):
     if not _configured:
         scholarly.set_retries(RETRIES)
         scholarly.set_timeout(TIMEOUT)
+        atexit.register(close_browser)
         _configured = True
+
+
+def _descendants(pid):
+    """Every process started, directly or indirectly, by `pid`."""
+    try:
+        lister = subprocess.Popen(["ps", "-eo", "pid=,ppid="], stdout=subprocess.PIPE, text=True)
+        listing, _ = lister.communicate(timeout=10)
+    except Exception:
+        return []
+
+    children = {}
+    for line in listing.splitlines():
+        parts = line.split()
+        if len(parts) == 2 and parts[0].isdigit() and parts[1].isdigit():
+            if int(parts[0]) != lister.pid:     # ps lists itself; it is not a leftover
+                children.setdefault(int(parts[1]), []).append(int(parts[0]))
+
+    found, frontier = [], [pid]
+    while frontier:
+        for child in children.get(frontier.pop(), []):
+            found.append(child)
+            frontier.append(child)
+    return found
+
+
+def close_browser():
+    """Shut down the browser scholarly opens when Scholar shows a CAPTCHA.
+
+    scholarly starts a geckodriver and a headless Firefox to look at CAPTCHA
+    pages, and only closes them from a destructor that runs during interpreter
+    shutdown - by which point it can no longer import what it needs ("Could not
+    close webdriver cleanly"). Left alone, every run that meets a CAPTCHA leaves
+    a driver and four Firefox processes behind.
+
+    Quit the driver properly first; then, as a backstop, stop anything this
+    process started that is still running. Only our own descendants are ever
+    touched, so a Firefox you have open yourself is never affected. Returns
+    how many leftover processes had to be stopped.
+    """
+    client = sys.modules.get("scholarly")       # never import it just to clean up
+    nav = getattr(getattr(client, "scholarly", None), "_Scholarly__nav", None)
+    for manager in (getattr(nav, "pm1", None), getattr(nav, "pm2", None)):
+        driver = getattr(manager, "_webdriver", None)
+        if driver is not None:
+            try:
+                driver.quit()
+            except Exception:
+                pass
+            manager._webdriver = None            # so scholarly's destructor skips it
+
+    leftovers = _descendants(os.getpid())
+    for pid in leftovers:
+        try:
+            os.kill(pid, signal.SIGTERM)
+        except (ProcessLookupError, PermissionError):
+            pass
+    return len(leftovers)
 
 
 @contextmanager

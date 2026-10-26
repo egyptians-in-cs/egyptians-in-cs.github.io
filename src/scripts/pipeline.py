@@ -16,6 +16,7 @@ running any step twice is a no-op.
 
 import os
 import sys
+import signal
 import argparse
 from datetime import datetime, timedelta
 
@@ -473,6 +474,12 @@ def main():
     status.set_defaults(func=cmd_status)
 
     args = parser.parse_args()
+
+    # A run stopped with SIGTERM (pkill, a scheduler giving up) would otherwise die
+    # without running atexit handlers - and that is exactly when scholarly is most
+    # likely to have a CAPTCHA browser open. Exit normally so the cleanup runs.
+    signal.signal(signal.SIGTERM, lambda signum, frame: sys.exit(128 + signum))
+
     args.func(args)
 
 
