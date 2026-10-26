@@ -400,7 +400,10 @@ def cmd_refresh(args):
     state["last_refresh"] = datetime.now().isoformat(timespec="seconds")
     write_state(state)
 
-    print(f"\n{len(changes)} researcher(s) changed; {max(total_due - len(due), 0)} still due")
+    # Recount from the data rather than from the batch size: an early stop leaves
+    # most of the batch unrefreshed, which "total minus batch" would not show.
+    still_due = sum(1 for r in researchers if needs_refresh(r, args.max_age))
+    print(f"\n{len(changes)} researcher(s) changed; {still_due} still due")
     if stopped_early:
         print("Stopped early - run it again once Scholar has cooled off.")
 
